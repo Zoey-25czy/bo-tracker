@@ -44,10 +44,10 @@ html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-.section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; animation: fadeUp 0.35s ease both; }
+.section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: visible; animation: fadeUp 0.35s ease both; }
 .section.s-urgent { border-color: #F5C4B3; }
 .section-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); }
-.s-urgent .section-head { background: #FBF0EC; border-bottom-color: #F5C4B3; }
+.s-urgent .section-head { background: #FBF0EC; border-bottom-color: #F5C4B3; overflow: visible; }
 .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .dot-urgent { background: var(--urgent); } .dot-high { background: var(--high); } .dot-medium { background: var(--medium); } .dot-low { background: var(--text3); }
 .section-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); flex: 1; }
@@ -76,7 +76,7 @@ html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .btn-move { background: none; border: 1px solid transparent; border-radius: 6px; padding: 3px 7px; font-size: 12px; color: transparent; cursor: pointer; transition: all 0.15s; line-height: 1.4; white-space: nowrap; }
 .task:hover .btn-move { color: var(--text3); border-color: var(--border); }
 .btn-move:hover { background: var(--surface2) !important; color: var(--text2) !important; border-color: var(--border2) !important; }
-.move-dropdown { display: none; position: absolute; right: 0; top: 110%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; min-width: 200px; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.move-dropdown { display: none; position: fixed; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; min-width: 220px; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-height: 320px; overflow-y: auto; }
 .move-dropdown.open { display: block; }
 .move-dropdown-title { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 4px 8px 6px; }
 .move-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; cursor: pointer; transition: background 0.1s; font-size: 12px; color: var(--text2); border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
@@ -222,7 +222,7 @@ const DEF={
     {id:'tracka',name:'Track A — Competitor mapping & headhunting',color:'high',desc:'burst project · 2 weeks'},
     {id:'companalysis',name:'Competitor analysis',color:'high',desc:''},
     {id:'outreachmsg',name:'Outreach messaging',color:'high',desc:''},
-    {id:'headhunter',name:'Headhunter engagement',color:'low2',desc:'deferred — waiting on Jessica + Jingxi'},
+    {id:'headhunter',name:'Headhunter engagement',color:'low2',desc:'deferred — waiting on Jessica + Jay'},
   ],
   tasks:[
     {id:'t1',project:'urgent',name:'Reply 13 pending prospect messages',meta:'Outreach Messaging',priority:'urgent',status:'todo',freq:'ASAP'},
@@ -233,7 +233,7 @@ const DEF={
     {id:'t6',project:'trackb',name:'Source new leads (Apollo)',meta:'Fresh batch every 2 weeks',priority:'high',status:'recurring',freq:'Bi-weekly · 2 hrs'},
     {id:'t7',project:'tracka',name:'Categorize all companies by type',meta:'CorpSec, Exchange, Direct Competitor, Law Firm',priority:'high',status:'inprog',freq:'One-off'},
     {id:'t8',project:'tracka',name:'Enrich company + people data (Claude / GPT / Apollo)',meta:'Up to 10 rows per company',priority:'high',status:'todo',freq:'One-off'},
-    {id:'t9',project:'tracka',name:'Find No.2–5 target profiles per company on LinkedIn',meta:'Mid-level, late 20s–30s. Ask Jingxi for Recruiter access',priority:'high',status:'todo',freq:'One-off'},
+    {id:'t9',project:'tracka',name:'Find No.2–5 target profiles per company on LinkedIn',meta:'Mid-level, late 20s–30s. Ask Jay for Recruiter access',priority:'high',status:'todo',freq:'One-off'},
     {id:'t10',project:'tracka',name:'Craft personalized outreach messages per person',meta:'GPT draft + human refinement. Add angle/reason column',priority:'high',status:'inprog',freq:'One-off'},
     {id:'t11',project:'tracka',name:'Reply + follow up on competitor outreach daily',meta:'Start once campaigns are live',priority:'high',status:'todo',freq:'Daily (live)'},
     {id:'t12',project:'tracka',name:'Research LegalNodes — find junior/mid profiles',meta:'Europe-based. Do not approach co-founders',priority:'medium',status:'todo',freq:'One-off'},
@@ -243,7 +243,7 @@ const DEF={
     {id:'t16',project:'companalysis',name:'Research top 3–5 law firms in Malaysia',meta:'Low effort — can use Apollo / AI to populate',priority:'medium',status:'todo',freq:'One-off'},
     {id:'t17',project:'outreachmsg',name:'Finalize LinkedIn message template',meta:"Shorter. Open with: Hi I'm [Name] from blogoffice.com",priority:'high',status:'inprog',freq:'One-off'},
     {id:'t18',project:'outreachmsg',name:'Finalize email message template',meta:'Longer. Remove fluff. Add finance + Web3 positioning',priority:'high',status:'inprog',freq:'One-off'},
-    {id:'t19',project:'headhunter',name:'Find MY headhunters specializing in BD / Legal / CorpSec',meta:'Bring Jessica + Jingxi in to lead this',priority:'low',status:'deferred',freq:'TBD'},
+    {id:'t19',project:'headhunter',name:'Find MY headhunters specializing in BD / Legal / CorpSec',meta:'Bring Jessica + Jay in to lead this',priority:'low',status:'deferred',freq:'TBD'},
     {id:'t20',project:'headhunter',name:'Set up 1–2 intro calls with headhunters',meta:'Goal: learn their mapping playbook',priority:'low',status:'deferred',freq:'TBD'},
   ],
   completed:[],
@@ -289,7 +289,14 @@ function toggleMoveDropdown(taskId,btn){
   const dd=document.getElementById('move-dd-'+taskId);
   const wasOpen=dd.classList.contains('open');
   document.querySelectorAll('.move-dropdown.open').forEach(d=>d.classList.remove('open'));
-  if(!wasOpen) dd.classList.add('open');
+  if(!wasOpen){
+    if(dd.parentElement!==document.body) document.body.appendChild(dd);
+    const rect=btn.getBoundingClientRect();
+    dd.style.top=(rect.bottom+6)+'px';
+    dd.style.right=(window.innerWidth-rect.right)+'px';
+    dd.style.left='auto';
+    dd.classList.add('open');
+  }
 }
 
 function moveTask(taskId,newProjectId){
