@@ -8,31 +8,19 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #F7F5F0;
-  --surface: #FFFFFF;
-  --surface2: #F0EDE6;
-  --border: #E2DDD4;
-  --border2: #C8C2B8;
-  --text: #1A1714;
-  --text2: #6B6560;
-  --text3: #9E9890;
-  --urgent: #C44B2B;
-  --urgent-bg: #FBF0EC;
-  --high: #B07A18;
-  --high-bg: #FBF5E6;
-  --medium: #2B6CB5;
-  --medium-bg: #EBF2FB;
-  --low: #4A7C59;
-  --low-bg: #EBF4EE;
+  --bg: #F7F5F0; --surface: #FFFFFF; --surface2: #F0EDE6;
+  --border: #E2DDD4; --border2: #C8C2B8;
+  --text: #1A1714; --text2: #6B6560; --text3: #9E9890;
+  --urgent: #C44B2B; --urgent-bg: #FBF0EC;
+  --high: #B07A18; --high-bg: #FBF5E6;
+  --medium: #2B6CB5; --medium-bg: #EBF2FB;
+  --low: #4A7C59; --low-bg: #EBF4EE;
 }
 html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
-body { min-height: 100vh; }
 .page { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
-
-/* HEADER */
 .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1.5px solid var(--border); }
 .co-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
-.page-title { font-family: 'DM Serif Display', serif; font-size: 34px; line-height: 1.15; color: var(--text); }
+.page-title { font-family: 'DM Serif Display', serif; font-size: 34px; line-height: 1.15; }
 .page-title em { font-style: italic; color: var(--text2); }
 .header-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .owner-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px 5px 8px; }
@@ -41,73 +29,97 @@ body { min-height: 100vh; }
 .date-str { font-size: 12px; color: var(--text3); }
 .btn-add-project { display: inline-flex; align-items: center; gap: 6px; background: var(--text); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
 .btn-add-project:hover { opacity: 0.85; }
-
-/* METRICS */
-.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
 .metric { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; }
 .metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
 .metric.m-total::before { background: var(--text); }
 .metric.m-urgent::before { background: var(--urgent); }
 .metric.m-daily::before { background: var(--low); }
-.metric.m-done::before { background: #888; }
-.metric-val { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); line-height: 1; margin-bottom: 5px; }
+.metric.m-done::before { background: #6B6560; }
+.metric-val { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1; margin-bottom: 5px; }
 .metric-label { font-size: 12px; font-weight: 500; color: var(--text2); }
 .metric-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-/* SECTION */
-.section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.section-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.tab-bar { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface2); border-radius: 10px; padding: 4px; width: fit-content; }
+.tab-btn { padding: 8px 20px; border-radius: 8px; border: none; background: none; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; animation: fadeUp 0.35s ease both; }
+.section.s-urgent { border-color: #F5C4B3; }
+.section-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.s-urgent .section-head { background: #FBF0EC; border-bottom-color: #F5C4B3; }
 .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.dot-urgent { background: var(--urgent); }
-.dot-high { background: var(--high); }
-.dot-medium { background: var(--medium); }
-.dot-low { background: var(--text3); }
+.dot-urgent { background: var(--urgent); } .dot-high { background: var(--high); } .dot-medium { background: var(--medium); } .dot-low { background: var(--text3); }
 .section-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); flex: 1; }
+.s-urgent .section-name { color: var(--urgent); }
 .section-controls { display: flex; align-items: center; gap: 8px; }
 .section-count { font-size: 11px; color: var(--text3); }
-.btn-sm { display: inline-flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 500; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+.btn-sm { display: inline-flex; align-items: center; background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 500; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.15s; }
 .btn-sm:hover { background: var(--surface2); border-color: var(--border2); }
-.btn-del-section { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; line-height: 1; transition: color 0.15s; }
-.btn-del-section:hover { color: var(--urgent); }
-
-/* TASK ROWS */
+.btn-icon { background: none; border: none; color: transparent; cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 4px; line-height: 1; transition: color 0.15s; }
+.section-head:hover .btn-icon { color: var(--text3); }
+.task:hover .btn-icon { color: var(--text3); }
+.completed-row:hover .btn-icon { color: var(--text3); }
+.btn-icon:hover { color: var(--urgent) !important; }
 .tasks { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-.task { display: grid; grid-template-columns: 1fr 110px 96px 80px 60px; gap: 8px; align-items: center; border: 1px solid transparent; border-radius: 8px; padding: 10px 12px; transition: all 0.15s; }
+
+/* TASK ROW — wider to fit move button */
+.task { display: grid; grid-template-columns: 1fr 100px 90px 36px 36px; gap: 6px; align-items: center; border: 1px solid transparent; border-radius: 8px; padding: 10px 12px; transition: all 0.15s; position: relative; }
 .task:hover { background: var(--bg); border-color: var(--border); }
 .task.t-urgent { border-left: 3px solid var(--urgent) !important; }
-.task.t-done { opacity: 0.45; }
-.task-info {}
-.task-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; cursor: pointer; }
+.task-name { font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 2px; }
 .task-name:hover { text-decoration: underline; text-decoration-color: var(--border2); }
 .task-meta { font-size: 11px; color: var(--text3); }
 
-/* BADGES */
+/* MOVE BUTTON & DROPDOWN */
+.move-wrap { position: relative; }
+.btn-move { background: none; border: 1px solid transparent; border-radius: 6px; padding: 3px 7px; font-size: 12px; color: transparent; cursor: pointer; transition: all 0.15s; line-height: 1.4; white-space: nowrap; }
+.task:hover .btn-move { color: var(--text3); border-color: var(--border); }
+.btn-move:hover { background: var(--surface2) !important; color: var(--text2) !important; border-color: var(--border2) !important; }
+.move-dropdown { display: none; position: absolute; right: 0; top: 110%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; min-width: 200px; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.move-dropdown.open { display: block; }
+.move-dropdown-title { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 4px 8px 6px; }
+.move-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; cursor: pointer; transition: background 0.1s; font-size: 12px; color: var(--text2); border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.move-option:hover { background: var(--surface2); color: var(--text); }
+.move-option .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
 .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; white-space: nowrap; text-align: center; cursor: pointer; transition: opacity 0.15s; user-select: none; }
 .badge:hover { opacity: 0.75; }
 .b-urgent { background: var(--urgent-bg); color: var(--urgent); }
 .b-high { background: var(--high-bg); color: var(--high); }
 .b-medium { background: var(--medium-bg); color: var(--medium); }
-.b-low { background: #EBF4EE; color: #4A7C59; }
+.b-low { background: var(--low-bg); color: var(--low); }
 .s-todo { background: #F0EDE6; color: #6B6560; }
 .s-inprog { background: #FDF3DC; color: #996A00; }
 .s-recurring { background: #E5F2EA; color: #2D6A42; }
 .s-deferred { background: #EFEFEF; color: #888480; }
 .s-done { background: #E5F2EA; color: #2D6A42; }
-
-.freq { font-size: 11px; color: var(--text3); text-align: right; }
-.btn-del-task { background: none; border: none; color: transparent; cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; transition: color 0.15s; line-height: 1; }
-.task:hover .btn-del-task { color: var(--text3); }
-.btn-del-task:hover { color: var(--urgent) !important; }
-
-/* EMPTY STATE */
 .empty-state { padding: 20px; text-align: center; color: var(--text3); font-size: 13px; font-style: italic; }
 
-/* MODAL OVERLAY */
+/* COMPLETED LOG */
+.comp-section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+.comp-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.comp-head-title { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); }
+.comp-meta { font-size: 11px; color: var(--text3); }
+.completed-row { display: grid; grid-template-columns: 1fr 160px 90px 36px; gap: 8px; align-items: center; padding: 10px 18px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.completed-row:last-child { border-bottom: none; }
+.completed-row:hover { background: var(--bg); }
+.comp-name { font-size: 13px; color: var(--text2); text-decoration: line-through; text-decoration-color: var(--border2); }
+.comp-proj { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.comp-date { font-size: 11px; color: var(--text3); }
+.btn-restore { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.btn-restore:hover { background: var(--surface2); }
+.btn-clear { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: var(--text3); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.btn-clear:hover { color: var(--urgent); border-color: var(--urgent); }
+.empty-comp { padding: 48px 20px; text-align: center; }
+.empty-comp-icon { font-size: 28px; margin-bottom: 10px; color: var(--text3); }
+.empty-comp-text { font-size: 13px; color: var(--text3); font-style: italic; }
+
+/* MODAL */
 .overlay { display: none; position: fixed; inset: 0; background: rgba(20,16,12,0.45); z-index: 100; align-items: center; justify-content: center; }
 .overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; margin: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: slideUp 0.2s ease; }
-@keyframes slideUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform:translateY(0); } }
-.modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; color: var(--text); }
+.modal { background: var(--surface); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; margin: 16px; animation: slideUp 0.2s ease; }
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
 .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
@@ -118,45 +130,38 @@ body { min-height: 100vh; }
 .btn-cancel:hover { background: var(--surface2); }
 .btn-save { background: var(--text); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
 .btn-save:hover { opacity: 0.85; }
-
-/* FOOTER */
 .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .footer-note { font-size: 12px; color: var(--text3); }
 .legend { display: flex; gap: 14px; }
 .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
 .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
-
-/* TOAST */
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 200; }
 .toast.show { opacity: 1; }
-
-/* ANIMATIONS */
+@keyframes slideUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform:translateY(0); } }
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-.section { animation: fadeUp 0.35s ease both; }
 </style>
 </head>
 <body>
 <div class="page">
-
   <div class="header">
     <div>
       <div class="co-label">Block Office</div>
       <h1 class="page-title">Project<br><em>Tracker</em></h1>
     </div>
     <div class="header-right">
-      <div class="owner-chip">
-        <div class="avatar">ZC</div>
-        <span class="owner-name">Zoey Chong</span>
-      </div>
+      <div class="owner-chip"><div class="avatar">ZC</div><span class="owner-name">Zoey Chong</span></div>
       <div class="date-str" id="dateStr"></div>
       <div class="date-str">Reviewed by Jay &amp; Mervin</div>
       <button class="btn-add-project" onclick="openProjectModal()">+ Add project</button>
     </div>
   </div>
-
   <div class="metrics" id="metrics"></div>
-  <div id="sections"></div>
-
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('active',this)">Active tasks</button>
+    <button class="tab-btn" onclick="switchTab('completed',this)">Completed log <span id="comp-count-badge"></span></button>
+  </div>
+  <div class="tab-content active" id="tab-active"><div id="sections"></div></div>
+  <div class="tab-content" id="tab-completed"><div id="completed-log"></div></div>
   <div class="footer">
     <div class="footer-note">Auto-saved in browser · Last updated: <span id="lastSaved">—</span></div>
     <div class="legend">
@@ -168,7 +173,7 @@ body { min-height: 100vh; }
   </div>
 </div>
 
-<!-- ADD / EDIT TASK MODAL -->
+<!-- TASK MODAL -->
 <div class="overlay" id="taskModal">
   <div class="modal">
     <div class="modal-title" id="taskModalTitle">Add task</div>
@@ -177,21 +182,10 @@ body { min-height: 100vh; }
     <div class="field"><label>Project</label><select id="f-project"></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="field"><label>Priority</label>
-        <select id="f-priority">
-          <option value="urgent">Urgent</option>
-          <option value="high" selected>High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
+        <select id="f-priority"><option value="urgent">Urgent</option><option value="high" selected>High</option><option value="medium">Medium</option><option value="low">Low</option></select>
       </div>
       <div class="field"><label>Status</label>
-        <select id="f-status">
-          <option value="todo">To Do</option>
-          <option value="inprog">In Progress</option>
-          <option value="recurring">Recurring</option>
-          <option value="deferred">Deferred</option>
-          <option value="done">Done</option>
-        </select>
+        <select id="f-status"><option value="todo">To Do</option><option value="inprog">In Progress</option><option value="recurring">Recurring</option><option value="deferred">Deferred</option><option value="done">Done</option></select>
       </div>
     </div>
     <div class="field"><label>Frequency / time est.</label><input id="f-freq" type="text" placeholder="e.g. Daily · 45 min  or  One-off"></div>
@@ -202,19 +196,13 @@ body { min-height: 100vh; }
   </div>
 </div>
 
-<!-- ADD PROJECT MODAL -->
+<!-- PROJECT MODAL -->
 <div class="overlay" id="projectModal">
   <div class="modal">
     <div class="modal-title">Add project</div>
     <div class="field"><label>Project name</label><input id="p-name" type="text" placeholder="e.g. Content Marketing"></div>
     <div class="field"><label>Color</label>
-      <select id="p-color">
-        <option value="high">Amber (High)</option>
-        <option value="urgent">Red (Urgent)</option>
-        <option value="medium">Blue (Medium)</option>
-        <option value="low">Green (Low)</option>
-        <option value="low2">Grey (Low)</option>
-      </select>
+      <select id="p-color"><option value="high">Amber (High)</option><option value="urgent">Red (Urgent)</option><option value="medium">Blue (Medium)</option><option value="low">Green (Low)</option><option value="low2">Grey</option></select>
     </div>
     <div class="field"><label>Description (optional)</label><input id="p-desc" type="text" placeholder="e.g. burst project · 2 weeks"></div>
     <div class="modal-actions">
@@ -223,249 +211,320 @@ body { min-height: 100vh; }
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-const STORAGE_KEY = 'bo_tracker_v3';
-
-const DEFAULT_DATA = {
-  projects: [
-    { id: 'urgent', name: 'Urgent — action needed now', color: 'urgent', desc: '' },
-    { id: 'trackb', name: 'Track B — Lead gen outbound', color: 'high', desc: 'daily rhythm' },
-    { id: 'tracka', name: 'Track A — Competitor mapping & headhunting', color: 'high', desc: 'burst project · 2 weeks' },
-    { id: 'companalysis', name: 'Competitor analysis', color: 'high', desc: '' },
-    { id: 'outreachmsg', name: 'Outreach messaging', color: 'high', desc: '' },
-    { id: 'headhunter', name: 'Headhunter engagement', color: 'low2', desc: 'deferred — waiting on Jessica + Jingxi' },
+const SK='bo_tracker_v5';
+const DEF={
+  projects:[
+    {id:'urgent',name:'Urgent — today / tomorrow',color:'urgent',desc:'move tasks here that need immediate action'},
+    {id:'trackb',name:'Track B — Lead gen outbound',color:'high',desc:'daily rhythm'},
+    {id:'tracka',name:'Track A — Competitor mapping & headhunting',color:'high',desc:'burst project · 2 weeks'},
+    {id:'companalysis',name:'Competitor analysis',color:'high',desc:''},
+    {id:'outreachmsg',name:'Outreach messaging',color:'high',desc:''},
+    {id:'headhunter',name:'Headhunter engagement',color:'low2',desc:'deferred — waiting on Jessica + Jingxi'},
   ],
-  tasks: [
-    { id: 't1',  project: 'urgent',      name: 'Reply 13 pending prospect messages',                    meta: 'Outreach Messaging',                                         priority: 'urgent', status: 'todo',      freq: 'ASAP' },
-    { id: 't2',  project: 'urgent',      name: 'Send bulk outreach messages (LinkedIn + Email)',         meta: 'Track A — Competitor Mapping',                               priority: 'urgent', status: 'todo',      freq: 'by next week' },
-    { id: 't3',  project: 'trackb',      name: 'Enrich + qualify leads (280 leads/day)',                 meta: '1,400 leads/week pool via Apollo',                            priority: 'high',   status: 'recurring', freq: 'Daily · 45 min' },
-    { id: 't4',  project: 'trackb',      name: 'Download leads + upload to campaign',                   meta: '7 rep accounts',                                             priority: 'high',   status: 'recurring', freq: 'Daily · 15 min' },
-    { id: 't5',  project: 'trackb',      name: 'Reply prospect messages (7 rep accounts)',              meta: '40 connections/account/day',                                 priority: 'high',   status: 'recurring', freq: 'Daily · 1 hr' },
-    { id: 't6',  project: 'trackb',      name: 'Source new leads (Apollo)',                             meta: 'Fresh batch every 2 weeks',                                  priority: 'high',   status: 'recurring', freq: 'Bi-weekly · 2 hrs' },
-    { id: 't7',  project: 'tracka',      name: 'Categorize all companies by type',                      meta: 'CorpSec, Exchange, Direct Competitor, Law Firm',              priority: 'high',   status: 'inprog',    freq: 'One-off' },
-    { id: 't8',  project: 'tracka',      name: 'Enrich company + people data (Claude / GPT / Apollo)',  meta: 'Up to 10 rows per company',                                  priority: 'high',   status: 'todo',      freq: 'One-off' },
-    { id: 't9',  project: 'tracka',      name: 'Find No.2–5 target profiles per company on LinkedIn',   meta: 'Mid-level, late 20s–30s. Ask Jingxi for Recruiter access',   priority: 'high',   status: 'todo',      freq: 'One-off' },
-    { id: 't10', project: 'tracka',      name: 'Craft personalized outreach messages per person',       meta: 'GPT draft + human refinement. Add angle/reason column',      priority: 'high',   status: 'inprog',    freq: 'One-off' },
-    { id: 't11', project: 'tracka',      name: 'Reply + follow up on competitor outreach daily',        meta: 'Start once campaigns are live',                              priority: 'high',   status: 'todo',      freq: 'Daily (live)' },
-    { id: 't12', project: 'tracka',      name: 'Research LegalNodes — find junior/mid profiles',        meta: 'Europe-based. Do not approach co-founders',                  priority: 'medium', status: 'todo',      freq: 'One-off' },
-    { id: 't13', project: 'tracka',      name: 'Ask Jessy for BVI company name',                        meta: 'BVI onshore setup + podcast company Jay mentioned',          priority: 'medium', status: 'todo',      freq: 'One-off' },
-    { id: 't14', project: 'companalysis',name: 'Add company category + outreach angle per company',     meta: 'e.g. Exchange → partnership + BD hire angle',                priority: 'high',   status: 'todo',      freq: 'One-off' },
-    { id: 't15', project: 'companalysis',name: 'Flag companies to avoid in sheet',                      meta: 'LaunchFactor, CoinGecko, Tokamak',                           priority: 'high',   status: 'todo',      freq: 'One-off' },
-    { id: 't16', project: 'companalysis',name: 'Research top 3–5 law firms in Malaysia',               meta: 'Low effort — can use Apollo / AI to populate',               priority: 'medium', status: 'todo',      freq: 'One-off' },
-    { id: 't17', project: 'outreachmsg', name: 'Finalize LinkedIn message template',                    meta: 'Shorter. Open with: "Hi I\'m [Name] from blogoffice.com"',   priority: 'high',   status: 'inprog',    freq: 'One-off' },
-    { id: 't18', project: 'outreachmsg', name: 'Finalize email message template',                       meta: 'Longer. Remove fluff. Add finance + Web3 positioning',       priority: 'high',   status: 'inprog',    freq: 'One-off' },
-    { id: 't19', project: 'headhunter',  name: 'Find MY headhunters specializing in BD / Legal / CorpSec', meta: 'Bring Jessica + Jingxi in to lead this',               priority: 'low',    status: 'deferred',  freq: 'TBD' },
-    { id: 't20', project: 'headhunter',  name: 'Set up 1–2 intro calls with headhunters',              meta: 'Goal: learn their mapping playbook',                         priority: 'low',    status: 'deferred',  freq: 'TBD' },
+  tasks:[
+    {id:'t1',project:'urgent',name:'Reply 13 pending prospect messages',meta:'Outreach Messaging',priority:'urgent',status:'todo',freq:'ASAP'},
+    {id:'t2',project:'urgent',name:'Send bulk outreach messages (LinkedIn + Email)',meta:'Track A — Competitor Mapping',priority:'urgent',status:'todo',freq:'By next week'},
+    {id:'t3',project:'trackb',name:'Enrich + qualify leads (280 leads/day)',meta:'1,400 leads/week pool via Apollo',priority:'high',status:'recurring',freq:'Daily · 45 min'},
+    {id:'t4',project:'trackb',name:'Download leads + upload to campaign',meta:'7 rep accounts',priority:'high',status:'recurring',freq:'Daily · 15 min'},
+    {id:'t5',project:'trackb',name:'Reply prospect messages (7 rep accounts)',meta:'40 connections/account/day',priority:'high',status:'recurring',freq:'Daily · 1 hr'},
+    {id:'t6',project:'trackb',name:'Source new leads (Apollo)',meta:'Fresh batch every 2 weeks',priority:'high',status:'recurring',freq:'Bi-weekly · 2 hrs'},
+    {id:'t7',project:'tracka',name:'Categorize all companies by type',meta:'CorpSec, Exchange, Direct Competitor, Law Firm',priority:'high',status:'inprog',freq:'One-off'},
+    {id:'t8',project:'tracka',name:'Enrich company + people data (Claude / GPT / Apollo)',meta:'Up to 10 rows per company',priority:'high',status:'todo',freq:'One-off'},
+    {id:'t9',project:'tracka',name:'Find No.2–5 target profiles per company on LinkedIn',meta:'Mid-level, late 20s–30s. Ask Jingxi for Recruiter access',priority:'high',status:'todo',freq:'One-off'},
+    {id:'t10',project:'tracka',name:'Craft personalized outreach messages per person',meta:'GPT draft + human refinement. Add angle/reason column',priority:'high',status:'inprog',freq:'One-off'},
+    {id:'t11',project:'tracka',name:'Reply + follow up on competitor outreach daily',meta:'Start once campaigns are live',priority:'high',status:'todo',freq:'Daily (live)'},
+    {id:'t12',project:'tracka',name:'Research LegalNodes — find junior/mid profiles',meta:'Europe-based. Do not approach co-founders',priority:'medium',status:'todo',freq:'One-off'},
+    {id:'t13',project:'tracka',name:'Ask Jessy for BVI company name',meta:'BVI onshore setup + podcast company Jay mentioned',priority:'medium',status:'todo',freq:'One-off'},
+    {id:'t14',project:'companalysis',name:'Add company category + outreach angle per company',meta:'e.g. Exchange → partnership + BD hire angle',priority:'high',status:'todo',freq:'One-off'},
+    {id:'t15',project:'companalysis',name:'Flag companies to avoid in sheet',meta:'LaunchFactor, CoinGecko, Tokamak',priority:'high',status:'todo',freq:'One-off'},
+    {id:'t16',project:'companalysis',name:'Research top 3–5 law firms in Malaysia',meta:'Low effort — can use Apollo / AI to populate',priority:'medium',status:'todo',freq:'One-off'},
+    {id:'t17',project:'outreachmsg',name:'Finalize LinkedIn message template',meta:"Shorter. Open with: Hi I'm [Name] from blogoffice.com",priority:'high',status:'inprog',freq:'One-off'},
+    {id:'t18',project:'outreachmsg',name:'Finalize email message template',meta:'Longer. Remove fluff. Add finance + Web3 positioning',priority:'high',status:'inprog',freq:'One-off'},
+    {id:'t19',project:'headhunter',name:'Find MY headhunters specializing in BD / Legal / CorpSec',meta:'Bring Jessica + Jingxi in to lead this',priority:'low',status:'deferred',freq:'TBD'},
+    {id:'t20',project:'headhunter',name:'Set up 1–2 intro calls with headhunters',meta:'Goal: learn their mapping playbook',priority:'low',status:'deferred',freq:'TBD'},
   ],
-  lastSaved: null
+  completed:[],
+  lastSaved:null
 };
 
-let data, editingTaskId = null, editingProjectId = null;
+let data,editingTaskId=null;
 
-function load() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    data = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
-  } catch(e) {
-    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+function load(){
+  try{const r=localStorage.getItem(SK);data=r?JSON.parse(r):JSON.parse(JSON.stringify(DEF));if(!data.completed)data.completed=[];}
+  catch(e){data=JSON.parse(JSON.stringify(DEF));}
+}
+function save(){
+  data.lastSaved=new Date().toISOString();
+  localStorage.setItem(SK,JSON.stringify(data));
+  const el=document.getElementById('lastSaved');
+  if(el)el.textContent=new Date().toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+function uid(){return 't'+Date.now()+Math.random().toString(36).slice(2,6);}
+
+const PL={urgent:'Urgent',high:'High',medium:'Medium',low:'Low'};
+const SL={todo:'To Do',inprog:'In Progress',recurring:'Recurring',deferred:'Deferred',done:'Done'};
+const PC={urgent:'dot-urgent',high:'dot-high',medium:'dot-medium',low:'dot-low',low2:'dot-low'};
+const PCYC=['urgent','high','medium','low'];
+const SCYC=['todo','inprog','recurring','deferred','done'];
+const DOT_COLORS={urgent:'#C44B2B',high:'#B07A18',medium:'#2B6CB5',low:'#9E9890',low2:'#9E9890'};
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// Close all move dropdowns when clicking outside
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.move-wrap')){
+    document.querySelectorAll('.move-dropdown.open').forEach(d=>d.classList.remove('open'));
   }
+});
+
+function toggleMoveDropdown(taskId,btn){
+  const dd=document.getElementById('move-dd-'+taskId);
+  const wasOpen=dd.classList.contains('open');
+  document.querySelectorAll('.move-dropdown.open').forEach(d=>d.classList.remove('open'));
+  if(!wasOpen) dd.classList.add('open');
 }
 
-function save() {
-  data.lastSaved = new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  const el = document.getElementById('lastSaved');
-  if (el) el.textContent = new Date().toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+function moveTask(taskId,newProjectId){
+  const t=data.tasks.find(x=>x.id===taskId);
+  if(!t)return;
+  const oldProj=data.projects.find(p=>p.id===t.project);
+  const newProj=data.projects.find(p=>p.id===newProjectId);
+  t.project=newProjectId;
+  // auto set priority when moving to/from urgent
+  if(newProjectId==='urgent') t.priority='urgent';
+  else if(t.priority==='urgent') t.priority='high';
+  document.querySelectorAll('.move-dropdown.open').forEach(d=>d.classList.remove('open'));
+  save();render();
+  showToast(`Moved to "${newProj?newProj.name:'project'}"`);
 }
 
-function uid() { return 't' + Date.now() + Math.random().toString(36).slice(2,6); }
-
-const PRIORITY_CYCLE = ['urgent','high','medium','low'];
-const STATUS_CYCLE   = ['todo','inprog','recurring','deferred','done'];
-
-const PRIORITY_LABEL = { urgent:'Urgent', high:'High', medium:'Medium', low:'Low' };
-const STATUS_LABEL   = { todo:'To Do', inprog:'In Progress', recurring:'Recurring', deferred:'Deferred', done:'Done' };
-const COLOR_DOT      = { urgent:'dot-urgent', high:'dot-high', medium:'dot-medium', low:'dot-low', low2:'dot-low' };
-
-function cyclePriority(taskId) {
-  const t = data.tasks.find(x => x.id === taskId);
-  if (!t) return;
-  const i = PRIORITY_CYCLE.indexOf(t.priority);
-  t.priority = PRIORITY_CYCLE[(i+1) % PRIORITY_CYCLE.length];
-  save(); render();
+function cyclePriority(id){
+  const t=data.tasks.find(x=>x.id===id);if(!t)return;
+  t.priority=PCYC[(PCYC.indexOf(t.priority)+1)%PCYC.length];
+  save();render();
 }
-function cycleStatus(taskId) {
-  const t = data.tasks.find(x => x.id === taskId);
-  if (!t) return;
-  const i = STATUS_CYCLE.indexOf(t.status);
-  t.status = STATUS_CYCLE[(i+1) % STATUS_CYCLE.length];
-  save(); render();
+function cycleStatus(id){
+  const t=data.tasks.find(x=>x.id===id);if(!t)return;
+  const ns=SCYC[(SCYC.indexOf(t.status)+1)%SCYC.length];
+  if(ns==='done'){markDone(id);}else{t.status=ns;save();render();}
 }
-function deleteTask(taskId) {
-  if (!confirm('Delete this task?')) return;
-  data.tasks = data.tasks.filter(x => x.id !== taskId);
-  save(); render(); showToast('Task deleted');
+function markDone(id){
+  const t=data.tasks.find(x=>x.id===id);if(!t)return;
+  const proj=data.projects.find(p=>p.id===t.project);
+  data.completed.unshift({id:uid(),name:t.name,meta:t.meta,project:proj?proj.name:t.project,priority:t.priority,freq:t.freq,completedAt:new Date().toISOString()});
+  data.tasks=data.tasks.filter(x=>x.id!==id);
+  save();render();showToast('Moved to completed log ✓');
 }
-function deleteProject(projId) {
-  if (!confirm('Delete this project and all its tasks?')) return;
-  data.projects = data.projects.filter(x => x.id !== projId);
-  data.tasks    = data.tasks.filter(x => x.project !== projId);
-  save(); render(); showToast('Project deleted');
+function restoreTask(cid){
+  const c=data.completed.find(x=>x.id===cid);if(!c)return;
+  const proj=data.projects.find(p=>p.name===c.project);
+  data.tasks.push({id:uid(),project:proj?proj.id:data.projects[0].id,name:c.name,meta:c.meta,priority:c.priority,status:'todo',freq:c.freq});
+  data.completed=data.completed.filter(x=>x.id!==cid);
+  save();render();showToast('Task restored to active');
 }
-function editTask(taskId) {
-  const t = data.tasks.find(x => x.id === taskId);
-  if (!t) return;
-  editingTaskId = taskId;
-  document.getElementById('taskModalTitle').textContent = 'Edit task';
+function deleteCompleted(cid){
+  if(!confirm('Permanently delete this record?'))return;
+  data.completed=data.completed.filter(x=>x.id!==cid);
+  save();render();
+}
+function clearAllCompleted(){
+  if(!confirm('Clear entire completed log? This cannot be undone.'))return;
+  data.completed=[];save();render();showToast('Log cleared');
+}
+function deleteTask(id){
+  if(!confirm('Delete this task?'))return;
+  data.tasks=data.tasks.filter(x=>x.id!==id);
+  save();render();showToast('Task deleted');
+}
+function deleteProject(id){
+  if(!confirm('Delete this project and all its tasks?'))return;
+  data.projects=data.projects.filter(x=>x.id!==id);
+  data.tasks=data.tasks.filter(x=>x.project!==id);
+  save();render();showToast('Project deleted');
+}
+function editTask(id){
+  const t=data.tasks.find(x=>x.id===id);if(!t)return;
+  editingTaskId=id;
+  document.getElementById('taskModalTitle').textContent='Edit task';
   populateProjectSelect(t.project);
-  document.getElementById('f-name').value     = t.name;
-  document.getElementById('f-meta').value     = t.meta;
-  document.getElementById('f-priority').value = t.priority;
-  document.getElementById('f-status').value   = t.status;
-  document.getElementById('f-freq').value     = t.freq;
+  document.getElementById('f-name').value=t.name;
+  document.getElementById('f-meta').value=t.meta;
+  document.getElementById('f-priority').value=t.priority;
+  document.getElementById('f-status').value=t.status;
+  document.getElementById('f-freq').value=t.freq;
   openModal('taskModal');
 }
-function openAddTask(projectId) {
-  editingTaskId = null;
-  document.getElementById('taskModalTitle').textContent = 'Add task';
-  populateProjectSelect(projectId);
-  document.getElementById('f-name').value     = '';
-  document.getElementById('f-meta').value     = '';
-  document.getElementById('f-priority').value = 'high';
-  document.getElementById('f-status').value   = 'todo';
-  document.getElementById('f-freq').value     = '';
+function openAddTask(pid){
+  editingTaskId=null;
+  document.getElementById('taskModalTitle').textContent='Add task';
+  populateProjectSelect(pid);
+  document.getElementById('f-name').value='';
+  document.getElementById('f-meta').value='';
+  document.getElementById('f-priority').value='high';
+  document.getElementById('f-status').value='todo';
+  document.getElementById('f-freq').value='';
   openModal('taskModal');
 }
-function populateProjectSelect(selectedId) {
-  const sel = document.getElementById('f-project');
-  sel.innerHTML = data.projects.map(p =>
-    `<option value="${p.id}" ${p.id===selectedId?'selected':''}>${p.name}</option>`
-  ).join('');
+function populateProjectSelect(sel){
+  document.getElementById('f-project').innerHTML=data.projects.map(p=>`<option value="${p.id}"${p.id===sel?' selected':''}>${p.name}</option>`).join('');
 }
-function saveTask() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('Please enter a task name'); return; }
-  const taskData = {
-    name,
-    meta:     document.getElementById('f-meta').value.trim(),
-    project:  document.getElementById('f-project').value,
-    priority: document.getElementById('f-priority').value,
-    status:   document.getElementById('f-status').value,
-    freq:     document.getElementById('f-freq').value.trim(),
-  };
-  if (editingTaskId) {
-    const t = data.tasks.find(x => x.id === editingTaskId);
-    Object.assign(t, taskData);
+function saveTask(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Please enter a task name');return;}
+  const ns=document.getElementById('f-status').value;
+  const td={name,meta:document.getElementById('f-meta').value.trim(),project:document.getElementById('f-project').value,priority:document.getElementById('f-priority').value,status:ns,freq:document.getElementById('f-freq').value.trim()};
+  if(editingTaskId){
+    const t=data.tasks.find(x=>x.id===editingTaskId);
+    Object.assign(t,td);
+    if(ns==='done'){markDone(editingTaskId);closeModal('taskModal');return;}
     showToast('Task updated');
-  } else {
-    data.tasks.push({ id: uid(), ...taskData });
+  }else{
+    if(ns==='done'){
+      const proj=data.projects.find(p=>p.id===td.project);
+      data.completed.unshift({id:uid(),name:td.name,meta:td.meta,project:proj?proj.name:td.project,priority:td.priority,freq:td.freq,completedAt:new Date().toISOString()});
+      save();closeModal('taskModal');render();showToast('Added to completed log');return;
+    }
+    data.tasks.push({id:uid(),...td});
     showToast('Task added');
   }
-  save(); closeModal('taskModal'); render();
+  save();closeModal('taskModal');render();
 }
-function openProjectModal() {
-  document.getElementById('p-name').value  = '';
-  document.getElementById('p-color').value = 'high';
-  document.getElementById('p-desc').value  = '';
+function openProjectModal(){
+  document.getElementById('p-name').value='';
+  document.getElementById('p-color').value='high';
+  document.getElementById('p-desc').value='';
   openModal('projectModal');
 }
-function saveProject() {
-  const name = document.getElementById('p-name').value.trim();
-  if (!name) { alert('Please enter a project name'); return; }
-  const id = 'p' + Date.now();
-  data.projects.push({
-    id,
-    name,
-    color: document.getElementById('p-color').value,
-    desc:  document.getElementById('p-desc').value.trim(),
-  });
-  save(); closeModal('projectModal'); render();
-  showToast('Project added');
+function saveProject(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){alert('Please enter a project name');return;}
+  data.projects.push({id:'p'+Date.now(),name,color:document.getElementById('p-color').value,desc:document.getElementById('p-desc').value.trim()});
+  save();closeModal('projectModal');render();showToast('Project added');
 }
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-function renderMetrics() {
-  const total   = data.tasks.length;
-  const urgent  = data.tasks.filter(t => t.priority==='urgent' || t.status==='inprog').length;
-  const daily   = data.tasks.filter(t => t.status==='recurring').length;
-  const done    = data.tasks.filter(t => t.status==='done').length;
-  document.getElementById('metrics').innerHTML = `
-    <div class="metric m-total"><div class="metric-val">${total}</div><div class="metric-label">Total tasks</div><div class="metric-sub">across ${data.projects.length} projects</div></div>
-    <div class="metric m-urgent"><div class="metric-val">${urgent}</div><div class="metric-label">Urgent / In progress</div><div class="metric-sub">need action now</div></div>
+function renderMetrics(){
+  const active=data.tasks.length;
+  const urgent=data.tasks.filter(t=>t.project==='urgent').length;
+  const daily=data.tasks.filter(t=>t.status==='recurring').length;
+  const done=data.completed.length;
+  document.getElementById('metrics').innerHTML=`
+    <div class="metric m-total"><div class="metric-val">${active}</div><div class="metric-label">Active tasks</div><div class="metric-sub">across ${data.projects.length} projects</div></div>
+    <div class="metric m-urgent"><div class="metric-val">${urgent}</div><div class="metric-label">Urgent today/tomorrow</div><div class="metric-sub">needs immediate action</div></div>
     <div class="metric m-daily"><div class="metric-val">${daily}</div><div class="metric-label">Daily recurring</div><div class="metric-sub">ongoing tasks</div></div>
-    <div class="metric m-done"><div class="metric-val">${done}</div><div class="metric-label">Done</div><div class="metric-sub">completed tasks</div></div>
-  `;
+    <div class="metric m-done"><div class="metric-val">${done}</div><div class="metric-label">Completed</div><div class="metric-sub">all time</div></div>`;
+  const badge=document.getElementById('comp-count-badge');
+  if(badge)badge.textContent=done>0?` (${done})`:'';
 }
 
-function renderSections() {
-  const container = document.getElementById('sections');
-  container.innerHTML = '';
-  data.projects.forEach(proj => {
-    const tasks = data.tasks.filter(t => t.project === proj.id);
-    const dotClass = COLOR_DOT[proj.color] || 'dot-low';
-    const taskRows = tasks.length === 0
-      ? `<div class="empty-state">No tasks yet — add one below</div>`
-      : tasks.map(t => {
-          const isDone = t.status === 'done';
-          return `
-          <div class="task ${t.priority==='urgent'?'t-urgent':''} ${isDone?'t-done':''}">
-            <div class="task-info">
-              <div class="task-name" onclick="editTask('${t.id}')" title="Click to edit">${t.name}</div>
-              ${t.meta ? `<div class="task-meta">${t.meta}</div>` : ''}
-            </div>
-            <span class="badge b-${t.priority}" onclick="cyclePriority('${t.id}')" title="Click to change priority">${PRIORITY_LABEL[t.priority]}</span>
-            <span class="badge s-${t.status}" onclick="cycleStatus('${t.id}')" title="Click to change status">${STATUS_LABEL[t.status]}</span>
-            <div class="freq">${t.freq || '—'}</div>
-            <button class="btn-del-task" onclick="deleteTask('${t.id}')" title="Delete task">✕</button>
-          </div>`;
-        }).join('');
+function renderSections(){
+  const c=document.getElementById('sections');
+  c.innerHTML='';
+  data.projects.forEach(proj=>{
+    const tasks=data.tasks.filter(t=>t.project===proj.id);
+    const dot=PC[proj.color]||'dot-low';
+    const isUrgent=proj.id==='urgent';
 
-    const section = document.createElement('div');
-    section.className = 'section';
-    section.innerHTML = `
+    // Build move dropdown options (other projects only)
+    const otherProjects=data.projects.filter(p=>p.id!==proj.id);
+
+    const rows=tasks.length===0
+      ?`<div class="empty-state">No tasks here — move tasks here using the ↗ button on any task</div>`
+      :tasks.map(t=>{
+        const moveOptions=otherProjects.map(p=>`
+          <button class="move-option" onclick="moveTask('${t.id}','${p.id}')">
+            <span class="dot" style="background:${DOT_COLORS[p.color]||'#9E9890'}"></span>
+            ${p.name}
+          </button>`).join('');
+        return `
+        <div class="task ${isUrgent?'t-urgent':''}">
+          <div>
+            <div class="task-name" onclick="editTask('${t.id}')" title="Click to edit">${t.name}</div>
+            ${t.meta?`<div class="task-meta">${t.meta}</div>`:''}
+          </div>
+          <span class="badge b-${t.priority}" onclick="cyclePriority('${t.id}')" title="Click to change priority">${PL[t.priority]}</span>
+          <span class="badge s-${t.status}" onclick="cycleStatus('${t.id}')" title="Cycle to Done to complete">${SL[t.status]}</span>
+          <div class="move-wrap">
+            <button class="btn-move" onclick="toggleMoveDropdown('${t.id}',this)" title="Move to another project">↗</button>
+            <div class="move-dropdown" id="move-dd-${t.id}">
+              <div class="move-dropdown-title">Move to project</div>
+              ${moveOptions}
+            </div>
+          </div>
+          <button class="btn-icon" onclick="deleteTask('${t.id}')" title="Delete">✕</button>
+        </div>`;
+      }).join('');
+
+    const s=document.createElement('div');
+    s.className='section'+(isUrgent?' s-urgent':'');
+    s.innerHTML=`
       <div class="section-head">
-        <div class="section-dot ${dotClass}"></div>
-        <span class="section-name">${proj.name}${proj.desc ? `<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);margin-left:6px;font-size:11px">· ${proj.desc}</span>` : ''}</span>
+        <div class="section-dot ${dot}"></div>
+        <span class="section-name">${proj.name}${proj.desc?`<span style="font-weight:400;text-transform:none;letter-spacing:0;color:${isUrgent?'#C44B2B99':'var(--text3)'};margin-left:6px;font-size:11px">· ${proj.desc}</span>`:''}</span>
         <div class="section-controls">
           <span class="section-count">${tasks.length} task${tasks.length!==1?'s':''}</span>
           <button class="btn-sm" onclick="openAddTask('${proj.id}')">+ Add task</button>
-          <button class="btn-del-section" onclick="deleteProject('${proj.id}')" title="Delete project">✕</button>
+          ${isUrgent?'':`<button class="btn-icon" onclick="deleteProject('${proj.id}')" title="Delete project">✕</button>`}
         </div>
       </div>
-      <div class="tasks">${taskRows}</div>
-    `;
-    container.appendChild(section);
+      <div class="tasks">${rows}</div>`;
+    c.appendChild(s);
   });
 }
 
-function render() {
-  renderMetrics();
-  renderSections();
-  const el = document.getElementById('lastSaved');
-  if (el && data.lastSaved) {
-    el.textContent = new Date(data.lastSaved).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+function renderCompleted(){
+  const c=document.getElementById('completed-log');
+  if(data.completed.length===0){
+    c.innerHTML=`<div class="comp-section"><div class="comp-head"><span class="comp-head-title">Completed tasks</span><span class="comp-meta">0 tasks</span></div><div class="empty-comp"><div class="empty-comp-icon">✓</div><div class="empty-comp-text">No completed tasks yet.<br>Cycle a task status to Done and it moves here automatically.</div></div></div>`;
+    return;
   }
+  const groups={};
+  data.completed.forEach(c=>{
+    const k=new Date(c.completedAt).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    if(!groups[k])groups[k]=[];
+    groups[k].push(c);
+  });
+  let html='';
+  Object.entries(groups).forEach(([month,items])=>{
+    html+=`<div class="comp-section"><div class="comp-head"><span class="comp-head-title">${month}</span><div style="display:flex;align-items:center;gap:10px"><span class="comp-meta">${items.length} completed</span><button class="btn-clear" onclick="clearAllCompleted()">Clear all</button></div></div>`;
+    items.forEach(c=>{
+      const date=new Date(c.completedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      html+=`<div class="completed-row">
+        <div><div class="comp-name">${c.name}</div><div class="comp-proj">${c.project} · ${PL[c.priority]||c.priority}</div></div>
+        <div class="comp-date">Done ${date}</div>
+        <button class="btn-restore" onclick="restoreTask('${c.id}')">Restore</button>
+        <button class="btn-icon" onclick="deleteCompleted('${c.id}')" title="Delete">✕</button>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  c.innerHTML=html;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  load();
-  render();
+function render(){
+  renderMetrics();renderSections();renderCompleted();
+  const el=document.getElementById('lastSaved');
+  if(el&&data.lastSaved)el.textContent=new Date(data.lastSaved).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+}
 
-  document.querySelectorAll('.overlay').forEach(el => {
-    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-  });
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dateStr').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  load();render();
+  document.querySelectorAll('.overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});});
 });
 </script>
 </body>
