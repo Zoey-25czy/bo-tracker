@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Office — Project Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F0EDE6;
+  --border: #E2DDD4;
+  --border2: #C8C2B8;
+  --text: #1A1714;
+  --text2: #6B6560;
+  --text3: #9E9890;
+  --urgent: #C44B2B;
+  --urgent-bg: #FBF0EC;
+  --high: #B07A18;
+  --high-bg: #FBF5E6;
+  --medium: #2B6CB5;
+  --medium-bg: #EBF2FB;
+  --low: #4A7C59;
+  --low-bg: #EBF4EE;
+}
+html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
+body { min-height: 100vh; }
+.page { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* HEADER */
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1.5px solid var(--border); }
+.co-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.page-title { font-family: 'DM Serif Display', serif; font-size: 34px; line-height: 1.15; color: var(--text); }
+.page-title em { font-style: italic; color: var(--text2); }
+.header-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.owner-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px 5px 8px; }
+.avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--text); color: #fff; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.owner-name { font-size: 13px; font-weight: 500; }
+.date-str { font-size: 12px; color: var(--text3); }
+.btn-add-project { display: inline-flex; align-items: center; gap: 6px; background: var(--text); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.btn-add-project:hover { opacity: 0.85; }
+
+/* METRICS */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; }
+.metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
+.metric.m-total::before { background: var(--text); }
+.metric.m-urgent::before { background: var(--urgent); }
+.metric.m-daily::before { background: var(--low); }
+.metric.m-done::before { background: #888; }
+.metric-val { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); line-height: 1; margin-bottom: 5px; }
+.metric-label { font-size: 12px; font-weight: 500; color: var(--text2); }
+.metric-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* SECTION */
+.section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.section-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-urgent { background: var(--urgent); }
+.dot-high { background: var(--high); }
+.dot-medium { background: var(--medium); }
+.dot-low { background: var(--text3); }
+.section-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); flex: 1; }
+.section-controls { display: flex; align-items: center; gap: 8px; }
+.section-count { font-size: 11px; color: var(--text3); }
+.btn-sm { display: inline-flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 500; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+.btn-sm:hover { background: var(--surface2); border-color: var(--border2); }
+.btn-del-section { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; line-height: 1; transition: color 0.15s; }
+.btn-del-section:hover { color: var(--urgent); }
+
+/* TASK ROWS */
+.tasks { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.task { display: grid; grid-template-columns: 1fr 110px 96px 80px 60px; gap: 8px; align-items: center; border: 1px solid transparent; border-radius: 8px; padding: 10px 12px; transition: all 0.15s; }
+.task:hover { background: var(--bg); border-color: var(--border); }
+.task.t-urgent { border-left: 3px solid var(--urgent) !important; }
+.task.t-done { opacity: 0.45; }
+.task-info {}
+.task-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; cursor: pointer; }
+.task-name:hover { text-decoration: underline; text-decoration-color: var(--border2); }
+.task-meta { font-size: 11px; color: var(--text3); }
+
+/* BADGES */
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; white-space: nowrap; text-align: center; cursor: pointer; transition: opacity 0.15s; user-select: none; }
+.badge:hover { opacity: 0.75; }
+.b-urgent { background: var(--urgent-bg); color: var(--urgent); }
+.b-high { background: var(--high-bg); color: var(--high); }
+.b-medium { background: var(--medium-bg); color: var(--medium); }
+.b-low { background: #EBF4EE; color: #4A7C59; }
+.s-todo { background: #F0EDE6; color: #6B6560; }
+.s-inprog { background: #FDF3DC; color: #996A00; }
+.s-recurring { background: #E5F2EA; color: #2D6A42; }
+.s-deferred { background: #EFEFEF; color: #888480; }
+.s-done { background: #E5F2EA; color: #2D6A42; }
+
+.freq { font-size: 11px; color: var(--text3); text-align: right; }
+.btn-del-task { background: none; border: none; color: transparent; cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; transition: color 0.15s; line-height: 1; }
+.task:hover .btn-del-task { color: var(--text3); }
+.btn-del-task:hover { color: var(--urgent) !important; }
+
+/* EMPTY STATE */
+.empty-state { padding: 20px; text-align: center; color: var(--text3); font-size: 13px; font-style: italic; }
+
+/* MODAL OVERLAY */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(20,16,12,0.45); z-index: 100; align-items: center; justify-content: center; }
+.overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; margin: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: slideUp 0.2s ease; }
+@keyframes slideUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; color: var(--text); }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--border2); background: var(--surface); }
+.field textarea { resize: vertical; min-height: 60px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.btn-cancel { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2); font-family: inherit; }
+.btn-cancel:hover { background: var(--surface2); }
+.btn-save { background: var(--text); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.btn-save:hover { opacity: 0.85; }
+
+/* FOOTER */
+.footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.footer-note { font-size: 12px; color: var(--text3); }
+.legend { display: flex; gap: 14px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+.legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 200; }
+.toast.show { opacity: 1; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.section { animation: fadeUp 0.35s ease both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="co-label">Block Office</div>
+      <h1 class="page-title">Project<br><em>Tracker</em></h1>
+    </div>
+    <div class="header-right">
+      <div class="owner-chip">
+        <div class="avatar">ZC</div>
+        <span class="owner-name">Zoey Chong</span>
+      </div>
+      <div class="date-str" id="dateStr"></div>
+      <div class="date-str">Reviewed by Jay &amp; Mervin</div>
+      <button class="btn-add-project" onclick="openProjectModal()">+ Add project</button>
+    </div>
+  </div>
+
+  <div class="metrics" id="metrics"></div>
+  <div id="sections"></div>
+
+  <div class="footer">
+    <div class="footer-note">Auto-saved in browser · Last updated: <span id="lastSaved">—</span></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--urgent)"></div>Urgent</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--high)"></div>High</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--medium)"></div>Medium</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--text3)"></div>Low</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT TASK MODAL -->
+<div class="overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-title" id="taskModalTitle">Add task</div>
+    <div class="field"><label>Task name</label><input id="f-name" type="text" placeholder="e.g. Enrich leads via Apollo"></div>
+    <div class="field"><label>Notes / context</label><textarea id="f-meta" placeholder="e.g. 280 leads/day from 1,400/week pool"></textarea></div>
+    <div class="field"><label>Project</label><select id="f-project"></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field"><label>Priority</label>
+        <select id="f-priority">
+          <option value="urgent">Urgent</option>
+          <option value="high" selected>High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="field"><label>Status</label>
+        <select id="f-status">
+          <option value="todo">To Do</option>
+          <option value="inprog">In Progress</option>
+          <option value="recurring">Recurring</option>
+          <option value="deferred">Deferred</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Frequency / time est.</label><input id="f-freq" type="text" placeholder="e.g. Daily · 45 min  or  One-off"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('taskModal')">Cancel</button>
+      <button class="btn-save" onclick="saveTask()">Save task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PROJECT MODAL -->
+<div class="overlay" id="projectModal">
+  <div class="modal">
+    <div class="modal-title">Add project</div>
+    <div class="field"><label>Project name</label><input id="p-name" type="text" placeholder="e.g. Content Marketing"></div>
+    <div class="field"><label>Color</label>
+      <select id="p-color">
+        <option value="high">Amber (High)</option>
+        <option value="urgent">Red (Urgent)</option>
+        <option value="medium">Blue (Medium)</option>
+        <option value="low">Green (Low)</option>
+        <option value="low2">Grey (Low)</option>
+      </select>
+    </div>
+    <div class="field"><label>Description (optional)</label><input id="p-desc" type="text" placeholder="e.g. burst project · 2 weeks"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('projectModal')">Cancel</button>
+      <button class="btn-save" onclick="saveProject()">Add project</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'bo_tracker_v3';
+
+const DEFAULT_DATA = {
+  projects: [
+    { id: 'urgent', name: 'Urgent — action needed now', color: 'urgent', desc: '' },
+    { id: 'trackb', name: 'Track B — Lead gen outbound', color: 'high', desc: 'daily rhythm' },
+    { id: 'tracka', name: 'Track A — Competitor mapping & headhunting', color: 'high', desc: 'burst project · 2 weeks' },
+    { id: 'companalysis', name: 'Competitor analysis', color: 'high', desc: '' },
+    { id: 'outreachmsg', name: 'Outreach messaging', color: 'high', desc: '' },
+    { id: 'headhunter', name: 'Headhunter engagement', color: 'low2', desc: 'deferred — waiting on Jessica + Jingxi' },
+  ],
+  tasks: [
+    { id: 't1',  project: 'urgent',      name: 'Reply 13 pending prospect messages',                    meta: 'Outreach Messaging',                                         priority: 'urgent', status: 'todo',      freq: 'ASAP' },
+    { id: 't2',  project: 'urgent',      name: 'Send bulk outreach messages (LinkedIn + Email)',         meta: 'Track A — Competitor Mapping',                               priority: 'urgent', status: 'todo',      freq: 'by next week' },
+    { id: 't3',  project: 'trackb',      name: 'Enrich + qualify leads (280 leads/day)',                 meta: '1,400 leads/week pool via Apollo',                            priority: 'high',   status: 'recurring', freq: 'Daily · 45 min' },
+    { id: 't4',  project: 'trackb',      name: 'Download leads + upload to campaign',                   meta: '7 rep accounts',                                             priority: 'high',   status: 'recurring', freq: 'Daily · 15 min' },
+    { id: 't5',  project: 'trackb',      name: 'Reply prospect messages (7 rep accounts)',              meta: '40 connections/account/day',                                 priority: 'high',   status: 'recurring', freq: 'Daily · 1 hr' },
+    { id: 't6',  project: 'trackb',      name: 'Source new leads (Apollo)',                             meta: 'Fresh batch every 2 weeks',                                  priority: 'high',   status: 'recurring', freq: 'Bi-weekly · 2 hrs' },
+    { id: 't7',  project: 'tracka',      name: 'Categorize all companies by type',                      meta: 'CorpSec, Exchange, Direct Competitor, Law Firm',              priority: 'high',   status: 'inprog',    freq: 'One-off' },
+    { id: 't8',  project: 'tracka',      name: 'Enrich company + people data (Claude / GPT / Apollo)',  meta: 'Up to 10 rows per company',                                  priority: 'high',   status: 'todo',      freq: 'One-off' },
+    { id: 't9',  project: 'tracka',      name: 'Find No.2–5 target profiles per company on LinkedIn',   meta: 'Mid-level, late 20s–30s. Ask Jingxi for Recruiter access',   priority: 'high',   status: 'todo',      freq: 'One-off' },
+    { id: 't10', project: 'tracka',      name: 'Craft personalized outreach messages per person',       meta: 'GPT draft + human refinement. Add angle/reason column',      priority: 'high',   status: 'inprog',    freq: 'One-off' },
+    { id: 't11', project: 'tracka',      name: 'Reply + follow up on competitor outreach daily',        meta: 'Start once campaigns are live',                              priority: 'high',   status: 'todo',      freq: 'Daily (live)' },
+    { id: 't12', project: 'tracka',      name: 'Research LegalNodes — find junior/mid profiles',        meta: 'Europe-based. Do not approach co-founders',                  priority: 'medium', status: 'todo',      freq: 'One-off' },
+    { id: 't13', project: 'tracka',      name: 'Ask Jessy for BVI company name',                        meta: 'BVI onshore setup + podcast company Jay mentioned',          priority: 'medium', status: 'todo',      freq: 'One-off' },
+    { id: 't14', project: 'companalysis',name: 'Add company category + outreach angle per company',     meta: 'e.g. Exchange → partnership + BD hire angle',                priority: 'high',   status: 'todo',      freq: 'One-off' },
+    { id: 't15', project: 'companalysis',name: 'Flag companies to avoid in sheet',                      meta: 'LaunchFactor, CoinGecko, Tokamak',                           priority: 'high',   status: 'todo',      freq: 'One-off' },
+    { id: 't16', project: 'companalysis',name: 'Research top 3–5 law firms in Malaysia',               meta: 'Low effort — can use Apollo / AI to populate',               priority: 'medium', status: 'todo',      freq: 'One-off' },
+    { id: 't17', project: 'outreachmsg', name: 'Finalize LinkedIn message template',                    meta: 'Shorter. Open with: "Hi I\'m [Name] from blogoffice.com"',   priority: 'high',   status: 'inprog',    freq: 'One-off' },
+    { id: 't18', project: 'outreachmsg', name: 'Finalize email message template',                       meta: 'Longer. Remove fluff. Add finance + Web3 positioning',       priority: 'high',   status: 'inprog',    freq: 'One-off' },
+    { id: 't19', project: 'headhunter',  name: 'Find MY headhunters specializing in BD / Legal / CorpSec', meta: 'Bring Jessica + Jingxi in to lead this',               priority: 'low',    status: 'deferred',  freq: 'TBD' },
+    { id: 't20', project: 'headhunter',  name: 'Set up 1–2 intro calls with headhunters',              meta: 'Goal: learn their mapping playbook',                         priority: 'low',    status: 'deferred',  freq: 'TBD' },
+  ],
+  lastSaved: null
+};
+
+let data, editingTaskId = null, editingProjectId = null;
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    data = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  } catch(e) {
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function save() {
+  data.lastSaved = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const el = document.getElementById('lastSaved');
+  if (el) el.textContent = new Date().toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function uid() { return 't' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+const PRIORITY_CYCLE = ['urgent','high','medium','low'];
+const STATUS_CYCLE   = ['todo','inprog','recurring','deferred','done'];
+
+const PRIORITY_LABEL = { urgent:'Urgent', high:'High', medium:'Medium', low:'Low' };
+const STATUS_LABEL   = { todo:'To Do', inprog:'In Progress', recurring:'Recurring', deferred:'Deferred', done:'Done' };
+const COLOR_DOT      = { urgent:'dot-urgent', high:'dot-high', medium:'dot-medium', low:'dot-low', low2:'dot-low' };
+
+function cyclePriority(taskId) {
+  const t = data.tasks.find(x => x.id === taskId);
+  if (!t) return;
+  const i = PRIORITY_CYCLE.indexOf(t.priority);
+  t.priority = PRIORITY_CYCLE[(i+1) % PRIORITY_CYCLE.length];
+  save(); render();
+}
+function cycleStatus(taskId) {
+  const t = data.tasks.find(x => x.id === taskId);
+  if (!t) return;
+  const i = STATUS_CYCLE.indexOf(t.status);
+  t.status = STATUS_CYCLE[(i+1) % STATUS_CYCLE.length];
+  save(); render();
+}
+function deleteTask(taskId) {
+  if (!confirm('Delete this task?')) return;
+  data.tasks = data.tasks.filter(x => x.id !== taskId);
+  save(); render(); showToast('Task deleted');
+}
+function deleteProject(projId) {
+  if (!confirm('Delete this project and all its tasks?')) return;
+  data.projects = data.projects.filter(x => x.id !== projId);
+  data.tasks    = data.tasks.filter(x => x.project !== projId);
+  save(); render(); showToast('Project deleted');
+}
+function editTask(taskId) {
+  const t = data.tasks.find(x => x.id === taskId);
+  if (!t) return;
+  editingTaskId = taskId;
+  document.getElementById('taskModalTitle').textContent = 'Edit task';
+  populateProjectSelect(t.project);
+  document.getElementById('f-name').value     = t.name;
+  document.getElementById('f-meta').value     = t.meta;
+  document.getElementById('f-priority').value = t.priority;
+  document.getElementById('f-status').value   = t.status;
+  document.getElementById('f-freq').value     = t.freq;
+  openModal('taskModal');
+}
+function openAddTask(projectId) {
+  editingTaskId = null;
+  document.getElementById('taskModalTitle').textContent = 'Add task';
+  populateProjectSelect(projectId);
+  document.getElementById('f-name').value     = '';
+  document.getElementById('f-meta').value     = '';
+  document.getElementById('f-priority').value = 'high';
+  document.getElementById('f-status').value   = 'todo';
+  document.getElementById('f-freq').value     = '';
+  openModal('taskModal');
+}
+function populateProjectSelect(selectedId) {
+  const sel = document.getElementById('f-project');
+  sel.innerHTML = data.projects.map(p =>
+    `<option value="${p.id}" ${p.id===selectedId?'selected':''}>${p.name}</option>`
+  ).join('');
+}
+function saveTask() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Please enter a task name'); return; }
+  const taskData = {
+    name,
+    meta:     document.getElementById('f-meta').value.trim(),
+    project:  document.getElementById('f-project').value,
+    priority: document.getElementById('f-priority').value,
+    status:   document.getElementById('f-status').value,
+    freq:     document.getElementById('f-freq').value.trim(),
+  };
+  if (editingTaskId) {
+    const t = data.tasks.find(x => x.id === editingTaskId);
+    Object.assign(t, taskData);
+    showToast('Task updated');
+  } else {
+    data.tasks.push({ id: uid(), ...taskData });
+    showToast('Task added');
+  }
+  save(); closeModal('taskModal'); render();
+}
+function openProjectModal() {
+  document.getElementById('p-name').value  = '';
+  document.getElementById('p-color').value = 'high';
+  document.getElementById('p-desc').value  = '';
+  openModal('projectModal');
+}
+function saveProject() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { alert('Please enter a project name'); return; }
+  const id = 'p' + Date.now();
+  data.projects.push({
+    id,
+    name,
+    color: document.getElementById('p-color').value,
+    desc:  document.getElementById('p-desc').value.trim(),
+  });
+  save(); closeModal('projectModal'); render();
+  showToast('Project added');
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function renderMetrics() {
+  const total   = data.tasks.length;
+  const urgent  = data.tasks.filter(t => t.priority==='urgent' || t.status==='inprog').length;
+  const daily   = data.tasks.filter(t => t.status==='recurring').length;
+  const done    = data.tasks.filter(t => t.status==='done').length;
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric m-total"><div class="metric-val">${total}</div><div class="metric-label">Total tasks</div><div class="metric-sub">across ${data.projects.length} projects</div></div>
+    <div class="metric m-urgent"><div class="metric-val">${urgent}</div><div class="metric-label">Urgent / In progress</div><div class="metric-sub">need action now</div></div>
+    <div class="metric m-daily"><div class="metric-val">${daily}</div><div class="metric-label">Daily recurring</div><div class="metric-sub">ongoing tasks</div></div>
+    <div class="metric m-done"><div class="metric-val">${done}</div><div class="metric-label">Done</div><div class="metric-sub">completed tasks</div></div>
+  `;
+}
+
+function renderSections() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  data.projects.forEach(proj => {
+    const tasks = data.tasks.filter(t => t.project === proj.id);
+    const dotClass = COLOR_DOT[proj.color] || 'dot-low';
+    const taskRows = tasks.length === 0
+      ? `<div class="empty-state">No tasks yet — add one below</div>`
+      : tasks.map(t => {
+          const isDone = t.status === 'done';
+          return `
+          <div class="task ${t.priority==='urgent'?'t-urgent':''} ${isDone?'t-done':''}">
+            <div class="task-info">
+              <div class="task-name" onclick="editTask('${t.id}')" title="Click to edit">${t.name}</div>
+              ${t.meta ? `<div class="task-meta">${t.meta}</div>` : ''}
+            </div>
+            <span class="badge b-${t.priority}" onclick="cyclePriority('${t.id}')" title="Click to change priority">${PRIORITY_LABEL[t.priority]}</span>
+            <span class="badge s-${t.status}" onclick="cycleStatus('${t.id}')" title="Click to change status">${STATUS_LABEL[t.status]}</span>
+            <div class="freq">${t.freq || '—'}</div>
+            <button class="btn-del-task" onclick="deleteTask('${t.id}')" title="Delete task">✕</button>
+          </div>`;
+        }).join('');
+
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.innerHTML = `
+      <div class="section-head">
+        <div class="section-dot ${dotClass}"></div>
+        <span class="section-name">${proj.name}${proj.desc ? `<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);margin-left:6px;font-size:11px">· ${proj.desc}</span>` : ''}</span>
+        <div class="section-controls">
+          <span class="section-count">${tasks.length} task${tasks.length!==1?'s':''}</span>
+          <button class="btn-sm" onclick="openAddTask('${proj.id}')">+ Add task</button>
+          <button class="btn-del-section" onclick="deleteProject('${proj.id}')" title="Delete project">✕</button>
+        </div>
+      </div>
+      <div class="tasks">${taskRows}</div>
+    `;
+    container.appendChild(section);
+  });
+}
+
+function render() {
+  renderMetrics();
+  renderSections();
+  const el = document.getElementById('lastSaved');
+  if (el && data.lastSaved) {
+    el.textContent = new Date(data.lastSaved).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  load();
+  render();
+
+  document.querySelectorAll('.overlay').forEach(el => {
+    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+  });
+});
+</script>
+</body>
+</html>
